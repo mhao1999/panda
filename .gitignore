@@ -1,0 +1,8 @@
+docs/
+.settings/
+target/
+tools/
+upgrade/
+*.txt
+/.classpath
+
