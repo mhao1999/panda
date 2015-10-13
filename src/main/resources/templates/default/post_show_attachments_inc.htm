@@ -13,42 +13,6 @@
 				</td>
 			</tr>
 		</#if>
-
-		<#if !hasThumb || thumbShowBox>
-			<tr>
-				<td width="15%" class="attachrow"><span class="genmed">&nbsp;${I18n.getMessage("Attachments.filename")}</span></td>
-				<td width="75%" class="attachrow"><span class="genmed">${a.info.realFilename}</span></td>
-				
-				<td rowspan="4" align="center">
-					<img src="${contextPath}/templates/${templateName}/images/icon_disk.gif" alt="[Disk]" />
-					<a href="${JForumContext.encodeURL("/posts/downloadAttach/${a.id}")}" class="gensmall"><b>${I18n.getMessage("Attachments.download")}</b></a>
-				</td>
-			</tr>
-
-			<tr>
-				<td width="15%" class="attachrow"><span class="genmed">&nbsp;${I18n.getMessage("Attachments.description")}</span></td>
-				<td width="75%" class="attachrow"><span class="genmed"><#if (a.info.comment?trim?length > 0)>${a.info.comment}<#else>${I18n.getMessage("Attachments.noDescription")}</#if></span></td>
-				
-			</tr>	
-
-			<tr>
-				<td class="attachrow"><span class="genmed">&nbsp;${I18n.getMessage("Attachments.filesize")}</span></td>
-				<td class="attachrow">
-					<span class="genmed">
-						<#if (a.info.filesize < 1024)>
-							${a.info.filesize} bytes
-						<#else>
-							${a.info.filesize / 1024} Kbytes
-						</#if>
-					</span>
-				</td>
-			</tr>
-
-			<tr>
-				<td class="attachrow"><span class="genmed">&nbsp;${I18n.getMessage("Attachments.totalDownload")}:</span></td>
-				<td class="attachrow"><span class="genmed">&nbsp;${a.info.downloadCount} ${I18n.getMessage("Attachments.time")}</span></td>
-			</tr>
-		</#if>
 	</table>
 	<br />
 </#list>
