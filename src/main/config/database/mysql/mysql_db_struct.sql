@@ -147,6 +147,20 @@ CREATE TABLE jforum_posts_text (
 ) ENGINE=InnoDB;
 
 --
+-- Table structure for table 'jforum_comment'
+--
+DROP TABLE IF EXISTS jforum_comment;
+CREATE TABLE jforum_comment (
+    comment_id INT NOT NULL AUTO_INCREMENT,
+    post_id INT NOT NULL DEFAULT 0,
+    topic_id INT NOT NULL DEFAULT 0,
+    user_id INT NOT NULL DEFAULT 0,
+    comment_text TEXT,
+    comment_time DATETIME DEFAULT NULL,
+    PRIMARY KEY (comment_id)
+) ENGINE=InnoDB;
+
+--
 -- Table structure for table 'jforum_privmsgs'
 --
 DROP TABLE IF EXISTS jforum_privmsgs;
