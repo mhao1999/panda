@@ -5,4 +5,4 @@ tools/
 upgrade/
 *.txt
 /.classpath
-
+/src/main/config/jforum-custom.conf

@@ -167,7 +167,18 @@
 									${post.text}
 								</#if>								
 							</div>
-
+							
+							<!-- Comment -->
+							<#assign pc = comments.get(post.id) />
+							
+							<#if pc?has_content>
+								<#list pc.getList() as comment>
+									<div class="commentbody">
+										${comment.text}
+									</div>
+								</#list>
+							</#if>
+							
 							<!-- Attachments -->
 							<#if post.hasAttachments() && (canDownloadAttachments || attachmentsEnabled)>
 								<#assign attachments = am.getAttachments(post.id, post.forumId)/>

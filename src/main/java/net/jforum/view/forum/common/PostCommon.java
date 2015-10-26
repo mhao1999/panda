@@ -47,6 +47,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,7 +55,9 @@ import net.jforum.JForumExecutionContext;
 import net.jforum.SessionFacade;
 import net.jforum.context.RequestContext;
 import net.jforum.dao.PostDAO;
+import net.jforum.entities.Comment;
 import net.jforum.entities.Post;
+import net.jforum.entities.PostComments;
 import net.jforum.entities.Smilie;
 import net.jforum.repository.BBCodeRepository;
 import net.jforum.repository.PostRepository;
@@ -334,5 +337,12 @@ public class PostCommon
 		JForumExecutionContext.getTemplateContext().put("hasCodeBlock", hasCodeBlock);
 
 		return helperList;
+	}
+	
+	public static Map<Integer, PostComments> topicPostComments(PostDAO dao, int topicId)
+	{
+		Map<Integer, PostComments> comments = dao.selectAllCommentByTopic(topicId);
+ 		
+		return comments;
 	}
 }

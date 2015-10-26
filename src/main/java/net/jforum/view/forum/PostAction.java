@@ -68,12 +68,14 @@ import net.jforum.dao.PostDAO;
 import net.jforum.dao.TopicDAO;
 import net.jforum.dao.UserDAO;
 import net.jforum.entities.Attachment;
+import net.jforum.entities.Comment;
 import net.jforum.entities.Forum;
 import net.jforum.entities.KarmaStatus;
 import net.jforum.entities.ModerationLog;
 import net.jforum.entities.Poll;
 import net.jforum.entities.PollChanges;
 import net.jforum.entities.Post;
+import net.jforum.entities.PostComments;
 import net.jforum.entities.QuotaLimit;
 import net.jforum.entities.Topic;
 import net.jforum.entities.User;
@@ -100,6 +102,7 @@ import net.jforum.view.forum.common.TopicsCommon;
 import net.jforum.view.forum.common.ViewCommon;
 
 import org.apache.commons.lang3.StringUtils;
+
 import freemarker.template.SimpleHash;
 
 /**
@@ -162,6 +165,9 @@ public class PostAction extends Command
 
 		List<Post> helperList = PostCommon.topicPosts(postDao, moderatorCanEdit, us.getUserId(), topic.getId(), start, count);
 		
+		// retrieve all comments
+		Map<Integer, PostComments> commentsMap = PostCommon.topicPostComments(postDao, topicId);
+		
 		// Ugly assumption:
 		// Is moderation pending for the topic?
 		if (topic.isModerated() && helperList.isEmpty()) {
@@ -216,6 +222,7 @@ public class PostAction extends Command
 		this.context.put("canVoteOnPoll", canVoteOnPoll);
 		this.context.put("rank", new RankingRepository());
 		this.context.put("posts", helperList);
+		this.context.put("comments", commentsMap);
 		this.context.put("forum", forum);
 		this.context.put("karmaMin", Integer.valueOf(SystemGlobals.getValue(ConfigKeys.KARMA_MIN_POINTS)));
 		this.context.put("karmaMax", Integer.valueOf(SystemGlobals.getValue(ConfigKeys.KARMA_MAX_POINTS)));

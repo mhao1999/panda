@@ -43,8 +43,11 @@
 package net.jforum.dao;
 
 import java.util.List;
+import java.util.Map;
 
+import net.jforum.entities.Comment;
 import net.jforum.entities.Post;
+import net.jforum.entities.PostComments;
 
 /**
  * Model interface for {@link net.jforum.entities.Post}.
@@ -97,6 +100,14 @@ public interface PostDAO
 	 * @return <code>ArrayList</code> containing all records found. Each entry of the <code>ArrayList</code> is a {@link net.jforum.entities.Post} object
 	 */
 	List<Post> selectAllByTopicByLimit(int topicId, int startFrom, int count) ;
+	
+	/**
+	 * Selects all comment messages related to a specific topic. 
+	 * 
+	 * @param topicId The topic ID 
+	 * @return <code>Map</code> containing all records found. Each entry of the <code>ArrayList</code> is a {@link net.jforum.entities.Comment} object
+	 */
+	Map<Integer, PostComments> selectAllCommentByTopic(int topicId) ;
 
     /**
 	 * Selects all posts associated to a specific user and belonging to 

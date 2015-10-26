@@ -49,14 +49,18 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import net.jforum.JForumExecutionContext;
 import net.jforum.dao.DataAccessDriver;
 import net.jforum.dao.UserDAO;
+import net.jforum.entities.Comment;
 import net.jforum.entities.Post;
+import net.jforum.entities.PostComments;
 import net.jforum.exceptions.DatabaseException;
 import net.jforum.repository.ForumRepository;
 import net.jforum.search.SearchFacade;
@@ -133,6 +137,23 @@ public class GenericPostDAO extends AutoKeys implements net.jforum.dao.PostDAO
 
 		return post;
 	}
+	
+	protected Comment makeComment(ResultSet rs) throws SQLException
+	{
+		Comment comment = new Comment();
+		comment.setId(rs.getInt("comment_id"));
+		comment.setPostId(rs.getInt("post_id"));
+		
+		Timestamp commentTime = rs.getTimestamp("comment_time");
+		comment.setTime(new Date(commentTime.getTime()));
+
+		comment.setText(this.getCommentTextFromResultSet(rs));
+
+		SimpleDateFormat df = new SimpleDateFormat(SystemGlobals.getValue(ConfigKeys.DATE_TIME_FORMAT), Locale.getDefault());
+		comment.setFormattedTime(df.format(commentTime));
+
+		return comment;
+	}
 
 	/**
 	 * Utility method to read the post text fromt the result set. This method may be useful when
@@ -145,6 +166,11 @@ public class GenericPostDAO extends AutoKeys implements net.jforum.dao.PostDAO
 	protected String getPostTextFromResultSet(ResultSet rs) throws SQLException
 	{
 		return rs.getString("post_text");
+	}
+	
+	protected String getCommentTextFromResultSet(ResultSet rs) throws SQLException
+	{
+		return rs.getString("comment_text");
 	}
 
 	/**
@@ -382,6 +408,50 @@ public class GenericPostDAO extends AutoKeys implements net.jforum.dao.PostDAO
 			}
 
 			return l;
+		}
+		catch (SQLException e) {
+			throw new DatabaseException(e);
+		}
+		finally {
+			DbUtils.close(rs, pstmt);
+		}
+	}
+	
+	/**
+	 * @see net.jforum.dao.PostDAO#selectAllCommentByTopic(int)
+	 */
+	public Map<Integer, PostComments> selectAllCommentByTopic(int topicId)
+	{
+		Map<Integer, PostComments> m = new HashMap<Integer, PostComments>();
+
+		String sql = SystemGlobals.getSql("PostModel.selectAllCommentByTopic");
+
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			pstmt = JForumExecutionContext.getConnection().prepareStatement(sql);
+			pstmt.setInt(1, topicId);
+
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				Comment comment = this.makeComment(rs);
+				PostComments pcs;
+				if (m.containsKey(comment.getPostId()))
+				{
+					pcs = m.get(comment.getPostId());
+				}
+				else
+				{
+					pcs = new PostComments();
+					m.put(comment.getPostId(), pcs);
+				}
+
+				pcs.add(comment);
+			}
+
+			return m;
 		}
 		catch (SQLException e) {
 			throw new DatabaseException(e);

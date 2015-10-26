@@ -92,9 +92,9 @@ public final class TestCaseUtils
 	public static String getRootDir()
 	{
 		if (utils.rootDir == null) {
-			utils.rootDir = utils.getClass().getResource("/").getPath();
+			utils.rootDir = utils.getClass().getResource("").getPath();
 			if (utils.rootDir.indexOf("build") == -1) {
-				utils.rootDir = utils.rootDir.substring(0, utils.rootDir.length() - "/test-classes/".length());							
+				utils.rootDir = utils.rootDir.substring(0, utils.rootDir.length() - "/test-classes/net/jforum/".length());							
 			} 
 			else {
 				utils.rootDir = utils.rootDir.substring(0, utils.rootDir.length() - "/build/classes/".length());
@@ -108,8 +108,8 @@ public final class TestCaseUtils
 	{		
 		SystemGlobals.reset();
 		getRootDir();		
-		SystemGlobals.initGlobals(this.rootDir+"/jforum", this.rootDir
-				+ "/jforum/WEB-INF/config/SystemGlobals.properties");
+		SystemGlobals.initGlobals(this.rootDir+"/test-classes", this.rootDir
+				+ "/test-classes/config/SystemGlobalsTest.properties");
 		
 		// Configure the template engine
         Configuration templateCfg = new Configuration();
