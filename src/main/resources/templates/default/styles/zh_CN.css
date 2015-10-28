@@ -20,6 +20,8 @@ th.thhead,td.cathead { font-size: 15px;}
 
 .postbody { font-size: 15px; }
 
+.commentbody { font-size: 15px; padding: 0px 0px 0px 20px; }
+
 .postinfo { font-size: 13px; }
 
 input, textarea, select { font-size: 15px; }

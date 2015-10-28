@@ -4,7 +4,7 @@
 
 <#assign canEditSomeMessage = false/>
 
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="${contextPath}/templates/${templateName}/js/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="${contextPath}/javascript/jquery.jeditable.pack.js"></script>
 <script type="text/javascript" src="${contextPath}/templates/${templateName}/js/post_show.js?${startupTime}"></script>
 <script type="text/javascript" src="${contextPath}/templates/${templateName}/js/post.js?${startupTime}"></script>
@@ -40,6 +40,21 @@
 		return false;
 	}
 </#if>
+
+	function activateQuickComment(commentId)
+	{
+		$("#quickComment_" + commentId).slideToggle('slow', function() {
+			window.scrollBy(0, 100);
+		});
+	}
+	
+	function cancelComment()
+	{
+		$("#quickComment").slideToggle('slow', function() {
+			window.scrollBy(0, -100);
+		});
+		f.message.value = "";
+	}
 
 /* ]]> */
 </script>
@@ -169,13 +184,58 @@
 							</div>
 							
 							<!-- Comment -->
-							<#assign pc = comments.get(post.id) />
-							
-							<#if pc?has_content>
-								<#list pc.getList() as comment>
+							<#if comments.get(post.id)?? >
+								<hr>
+								<#list comments.get(post.id).getList() as comment>
+								    <#assign cuser = users.get(comment.userId) />
+								    <div class="commentbody" style="font-size: 16px; font-weight:lighter; ">
+								    	<a class="hideDisplay" style="cursor: pointer;">
+								    		<span>${comment.userName}</span>
+								    		<div class="showDisplayOnHover">
+								    			<#include "comment_show_user_inc.htm"/>
+								    		</div>
+								    	</a>
+								    </div>
 									<div class="commentbody">
 										${comment.text}
 									</div>
+									<div class="commentbody">
+										<form action="${JForumContext.encodeURL("/jforum")}" method="post" name="post" id="post_${comment.id}" onsubmit="return validatePostForm(this);" enctype="multipart/form-data" accept-charset="${encoding}">
+											<input type="hidden" name="action" value="insertComment" />
+											<input type="hidden" name="module" value="posts" />
+											<input type="hidden" name="forum_id" value="${forum.id}" />
+											<input type="hidden" name="start" value="${start?default("")}" />
+											<input type="hidden" name="topic_id" value="${topic.id}" />
+											<input type="hidden" name="post_id" value="${post.id}" />
+											<input type="hidden" name="disable_html" value="1" />
+											<input type="hidden" name="quick" value="1" />
+	
+											<table width="100%">
+												<tr>
+													<span style="padding:0px 10px 0px 0px; color: #a0a0a0;">${comment.formattedTime}</span>
+													<span class="nav"><a href="javascript:activateQuickComment(${comment.id})">${I18n.getMessage("PostForm.quickComment")}</a></span>
+												</tr>
+											</table>
+						
+											<div align="left" style="display: none;" id="quickComment_${comment.id}">
+												<table>
+													<tr>
+														<td align="center">
+															<textarea class="post" style="width: 350px" name="message" rows="10" cols="35" onkeyup="enterText(this);" onclick="enterText(this);" onselect="enterText(this);" onblur="leaveText();"></textarea>
+														</td>
+													</tr>
+													<tr>
+														<td align="right" valign="middle">
+															<input type="submit" id="btnSubmit" value="${I18n.getMessage("PostForm.submit")}" class="mainoption" />
+															<input type="button" id="btnCancel" value="${I18n.getMessage("cancel")}" class="mainoption" onclick="cancelComment()"/>
+															<img src="${contextPath}/images/transp.gif" id="icon_saving" alt="" />
+														</td>
+													</tr>
+												</table>						
+					    					</div>
+										</form>
+									</div>
+									<hr>
 								</#list>
 							</#if>
 							
@@ -206,7 +266,42 @@
 		
 					<tr> 
 						<td class="${rowColor}" valign="bottom" nowrap="nowrap" width="100%">
-							<#include "post_show_user_profile_inc.htm"/>					
+						<div class="commentbody">
+							<form action="${JForumContext.encodeURL("/jforum")}" method="post" name="post" id="post_${topic.id}_${post.id}" onsubmit="return validatePostForm(this);" enctype="multipart/form-data" accept-charset="${encoding}">
+								<input type="hidden" name="action" value="insertComment" /> 
+								<input type="hidden" name="module" value="posts" /> 
+								<input type="hidden" name="forum_id" value="${forum.id}" /> 
+								<input type="hidden" name="start" value="${start?default(" ")}" /> 
+								<input type="hidden" name="topic_id" value="${topic.id}" /> 
+								<input type="hidden" name="post_id" value="${post.id}" /> 
+								<input type="hidden" name="disable_html" value="1" /> 
+								<input type="hidden" name="quick" value="1" />
+
+								<table width="100%">
+									<tr>
+										<span class="nav"><a
+											href="javascript:activateQuickComment(${topic.id} + '_' + ${post.id})">${I18n.getMessage("PostForm.quickComment")}</a></span>
+									</tr>
+								</table>
+
+								<div align="left" style="display: none;" id="quickComment_${topic.id}_${post.id}">
+									<table>
+										<tr>
+											<td align="center">
+												<textarea class="post" style="width: 350px" name="message" rows="10" cols="35" onkeyup="enterText(this);" onclick="enterText(this);"	onselect="enterText(this);" onblur="leaveText();"></textarea>
+											</td>
+										</tr>
+										<tr>
+											<td align="right" valign="middle"><input type="submit" id="btnSubmit" value="${I18n.getMessage("PostForm.submit")}" class="mainoption" /> 
+												<input type="button" id="btnCancel" value="${I18n.getMessage("cancel")}" class="mainoption" onclick="cancelComment()" /> 
+												<img src="${contextPath}/images/transp.gif" id="icon_saving" alt="" />
+											</td>
+										</tr>
+									</table>
+								</div>
+							</form>
+						</div> 
+						<!-- #include "post_show_user_profile_inc.htm"/-->					
 						</td>
 					</tr>
 		

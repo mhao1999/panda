@@ -1,0 +1,39 @@
+<span class="genmed"><b>${user.username?html}</b></span>
+
+<span class="gensmall">
+<#if comment.userId != 1>
+	${rank.getRankTitle(cuser.rankId, cuser.totalPosts)}
+	<br />
+</#if>
+
+<#if (cuser.avatar?exists && cuser.avatar?length > 0)>
+	<#if cuser.isExternalAvatar() || cuser.avatar.startsWith("http://") || cuser.avatar.startsWith("https://")>
+		<#if avatarAllowExternalUrl>
+			<img src="${cuser.avatar?html}" alt="[Avatar]" />
+		</#if>
+	<#else>
+		<img src="${contextPath}/${avatarPath}/${cuser.avatar}" alt="[Avatar]" /><br />
+	</#if>
+</#if>
+<br /> 
+
+<#if comment.userId != 1>
+	${I18n.getMessage("PostShow.userRegistrationDate")}: ${cuser.registrationDate}<br />
+	${I18n.getMessage("PostShow.userTotalMessages")}: ${cuser.totalPosts}
+</#if>
+<br />
+
+<#if (cuser.from?exists && cuser.from?length > 0)>
+	${I18n.getMessage("PostShow.userFrom")}: ${cuser.from?html}
+	<br />
+</#if>
+
+<#if comment.userId != 1>
+	<#if cuser.isOnline()>
+		<span class="online">${I18n.getMessage("PostShow.userOnline")}</span>
+	<#else>
+		<span class="offline">${I18n.getMessage("PostShow.userOffline")} </span>
+	</#if>
+</#if>
+</span>
+<br />

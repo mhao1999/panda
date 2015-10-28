@@ -124,6 +124,13 @@ public abstract class DataAccessDriver
 	public abstract PollDAO newPollDAO();
 	
 	/**
+	 * Gets a {@link net.jforum.dao.CommentDAO} instance.
+	 * 
+	 * @return <code>net.jforum.model.CommendModel</code> instance.
+	 */
+	public abstract CommentDAO newCommentDAO();
+	
+	/**
 	 * Gets a {@link net.jforum.dao.RankingDAO} instance.
 	 * 
 	 * @return <code>net.jforum.model.RankingModel</code> instance

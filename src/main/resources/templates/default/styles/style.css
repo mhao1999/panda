@@ -6,6 +6,38 @@ a:link   { color: #01336b; text-decoration: none; }
 a:active { color: #01336b; }
 a:visited{ color: #01336b; text-decoration: none; }
 a:hover  { color: #dd6900; text-decoration: underline; }
+a.hideDisplay {
+	position: relative; /*this is the key*/
+	/* Allows you to layer overlapping elements. */
+	z-index: 20;
+	color: #000;
+	text-decoration: none
+}
+a.hideDisplay:hover{
+/* Allows you to layer overlapping elements. */
+z-index: 30;
+}
+a.hideDisplay div.showDisplayOnHover{
+display: none
+}
+a.hideDisplay:hover div.showDisplayOnHover{
+display: block;
+position: absolute;
+font-size: 18px;
+
+line-height: 25px;
+top: 20px;
+left: 20px;
+
+width: 500px;
+padding: 10px;
+
+border: 1px solid #666666;
+background-color: #ffffff;
+
+color: #000000;
+text-align: left;
+}
 
 hr         { border: #dfdfdf 1px solid; height: 0px; }
 .bodyline  { border: #cccccc 1px solid; }
@@ -84,6 +116,9 @@ blockquote.uncited {
 
 /* posts */
 .postbody { font-size: 12px; line-height: 1.5em; }
+
+/* comments */
+.postbody { font-size: 12px; line-height: 1.5em; padding: 0px 0px 0px 20px; }
 
 .postinfo { font-size: 10px; color: #000000; background-color: #dee3e7; padding: 4px; height: 2em; }
 .postinfo .date { width: 170px; float: left; }

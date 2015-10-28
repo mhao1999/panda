@@ -60,6 +60,7 @@ import net.jforum.JForumExecutionContext;
 import net.jforum.SessionFacade;
 import net.jforum.context.RequestContext;
 import net.jforum.dao.AttachmentDAO;
+import net.jforum.dao.CommentDAO;
 import net.jforum.dao.DataAccessDriver;
 import net.jforum.dao.ForumDAO;
 import net.jforum.dao.KarmaDAO;
@@ -95,6 +96,7 @@ import net.jforum.util.preferences.ConfigKeys;
 import net.jforum.util.preferences.SystemGlobals;
 import net.jforum.util.preferences.TemplateKeys;
 import net.jforum.view.forum.common.AttachmentCommon;
+import net.jforum.view.forum.common.CommentCommon;
 import net.jforum.view.forum.common.ForumCommon;
 import net.jforum.view.forum.common.PollCommon;
 import net.jforum.view.forum.common.PostCommon;
@@ -1214,6 +1216,93 @@ public class PostAction extends Command
 			this.context.put("postPreview", PostCommon.preparePostForDisplay(postPreview));
 
 			this.insert();
+		}
+	}
+	
+	public void insertComment()
+	{
+		int forumId = this.request.getIntParameter("forum_id");
+
+		if (!this.anonymousPost(forumId)) {
+			return;
+		}
+		
+		Topic topic = new Topic(-1);
+		topic.setForumId(forumId);
+
+		TopicDAO topicDao = DataAccessDriver.getInstance().newTopicDAO();
+		CommentDAO commentDao = DataAccessDriver.getInstance().newCommentDAO();
+	
+		int topicId = this.request.getIntParameter("topic_id");
+		
+		int postId = this.request.getIntParameter("post_id");
+			
+		topic = TopicRepository.getTopic(new Topic(topicId));
+			
+		if (topic == null) {
+			topic = topicDao.selectById(topicId);
+		}
+		
+		UserSession us = SessionFacade.getUserSession();
+		User user = DataAccessDriver.getInstance().newUserDAO().selectById(us.getUserId());
+		
+		if ("1".equals(this.request.getParameter("quick")) && SessionFacade.isLogged()) {
+			this.request.addParameter("notify", user.isNotifyOnMessagesEnabled() ? "1" : null);
+			this.request.addParameter("attach_sig", user.isAttachSignatureEnabled() ? "1" : "0");
+		}
+
+		// Set the Post
+		Comment comment = CommentCommon.fillCommentFromRequest();
+		
+		if (comment.getText() == null || comment.getText().trim().equals("")) {
+			this.insert();
+			return;
+		}		
+		
+		// Check the elapsed time since the last post from the user
+		int delay = SystemGlobals.getIntValue(ConfigKeys.POSTS_NEW_DELAY);
+		
+		if (delay > 0) {
+			Long lastPostTime = (Long)SessionFacade.getAttribute(ConfigKeys.LAST_POST_TIME);
+			
+			if ((lastPostTime != null) && (System.currentTimeMillis() < (lastPostTime.longValue() + delay))) {
+				this.context.put("post", comment);
+				this.context.put("start", this.request.getParameter("start"));
+				this.context.put("error", I18n.getMessage("PostForm.tooSoon"));
+				this.insert();
+				return;				
+			}
+		}
+
+		// Topic watch
+		if (this.request.getParameter("notify") != null) {
+			this.watch(topicDao, topic.getId(), user.getId());
+		}
+
+		comment.setTopicId(topic.getId());
+		comment.setPostId(postId);
+
+		// Save the remaining stuff
+		int commentId = commentDao.addNew(comment);
+
+		StringBuffer path = new StringBuffer(512);
+		path.append(this.request.getContextPath()).append("/posts/list/");
+
+		int start = ViewCommon.getStartPage();
+
+		path.append(this.startPage(topic, start)).append('/')
+		.append(topic.getId()).append(SystemGlobals.getValue(ConfigKeys.SERVLET_EXTENSION))
+		.append("#p").append(commentId);
+
+		JForumExecutionContext.setRedirect(path.toString());
+
+		if (SystemGlobals.getBoolValue(ConfigKeys.POSTS_CACHE_ENABLED)) {
+			SimpleDateFormat df = new SimpleDateFormat(SystemGlobals.getValue(ConfigKeys.DATE_TIME_FORMAT), Locale.getDefault());
+			comment.setFormattedTime(df.format(comment.getTime()));					
+		}
+
+		if (delay > 0) {
+			SessionFacade.setAttribute(ConfigKeys.LAST_POST_TIME, Long.valueOf(System.currentTimeMillis()));
 		}
 	}
 

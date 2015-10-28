@@ -251,6 +251,18 @@ public final class ViewCommon
 	}
 	
 	/**
+	 * Formats a date using the pattern defined in the configuration file.
+	 * The key is the value of {@link net.jforum.util.preferences.ConfigKeys#SIMPLE_DATE_FORMAT}
+	 * @param date the date to format
+	 * @return the string with the formatted date
+	 */
+	public static String formatSimpleDate(final Date date)
+	{
+		final SimpleDateFormat sdf = new SimpleDateFormat(SystemGlobals.getValue(ConfigKeys.SIMPLE_DATE_FORMAT), Locale.getDefault());
+		return sdf.format(date);
+	}
+	
+	/**
 	 * Escapes &lt; by &amp;lt; and &gt; by &amp;gt;
 	 * @param contents the string to parse
 	 * @return the new string

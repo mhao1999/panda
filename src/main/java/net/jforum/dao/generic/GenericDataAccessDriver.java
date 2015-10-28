@@ -48,6 +48,7 @@ import net.jforum.dao.BanlistDAO;
 import net.jforum.dao.BannerDAO;
 import net.jforum.dao.BookmarkDAO;
 import net.jforum.dao.CategoryDAO;
+import net.jforum.dao.CommentDAO;
 import net.jforum.dao.ConfigDAO;
 import net.jforum.dao.DataAccessDriver;
 import net.jforum.dao.ForumDAO;
@@ -79,6 +80,7 @@ public class GenericDataAccessDriver extends DataAccessDriver
 	private static GroupDAO groupDao = new GenericGroupDAO();
 	private static PostDAO postDao = new GenericPostDAO();
 	private static PollDAO pollDao = new GenericPollDAO();
+	private static CommentDAO commentDao = new GenericCommentDAO();
 	private static RankingDAO rankingDao = new GenericRankingDAO();
 	private static TopicDAO topicDao = new GenericTopicDAO();
 	private static UserDAO userDao = new GenericUserDAO();
@@ -132,6 +134,14 @@ public class GenericDataAccessDriver extends DataAccessDriver
 	public PollDAO newPollDAO() 
 	{
 		return pollDao;
+	}
+	
+	/**
+	 * @see net.jforum.dao.DataAccessDriver#newCommentDAO()
+	 */
+	public CommentDAO newCommentDAO()
+	{
+		return commentDao;
 	}
 
 	/**

@@ -146,6 +146,7 @@ public final class ConfigKeys
 	public static final String CACHE_DIR = "cache.dir";
 
 	public static final String DATE_TIME_FORMAT = "dateTime.format";
+	public static final String SIMPLE_DATE_FORMAT = "simpleDate.format";
 	public static final String RSS_DATE_TIME_FORMAT = "rss.datetime.format";
 	public static final String RSS_ENABLED = "rss.enabled";
 	public static final String HOT_TOPIC_BEGIN = "hot.topic.begin";
