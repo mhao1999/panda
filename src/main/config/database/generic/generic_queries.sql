@@ -361,7 +361,7 @@ TopicModel.topicPosters = SELECT user_id, username, user_karma, user_avatar, use
 	FROM jforum_users \
 	WHERE user_id IN (:ids:)
 
-TopicModel.distinctPosters = SELECT DISTINCT user_id FROM jforum_posts WHERE topic_id = ?
+TopicModel.distinctPosters = SELECT DISTINCT user_id FROM (SELECT user_id, topic_id FROM jforum_posts UNION ALL SELECT user_id, topic_id FROM jforum_comment) AS onetable WHERE onetable.topic_id = ?
 
 TopicModel.selectTopicTitlesByIds = SELECT topic_id, topic_title FROM jforum_topics WHERE topic_id IN (:ids:)
 TopicModel.setModerationStatus = UPDATE jforum_topics SET moderated = ? WHERE forum_id = ?

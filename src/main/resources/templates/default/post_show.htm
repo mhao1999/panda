@@ -48,9 +48,9 @@
 		});
 	}
 	
-	function cancelComment()
+	function cancelComment(commentId)
 	{
-		$("#quickComment").slideToggle('slow', function() {
+		$("#quickComment_" + commentId).slideToggle('slow', function() {
 			window.scrollBy(0, -100);
 		});
 		f.message.value = "";
@@ -227,7 +227,7 @@
 													<tr>
 														<td align="right" valign="middle">
 															<input type="submit" id="btnSubmit" value="${I18n.getMessage("PostForm.submit")}" class="mainoption" />
-															<input type="button" id="btnCancel" value="${I18n.getMessage("cancel")}" class="mainoption" onclick="cancelComment()"/>
+															<input type="button" id="btnCancel" value="${I18n.getMessage("cancel")}" class="mainoption" onclick="cancelComment(${comment.id})"/>
 															<img src="${contextPath}/images/transp.gif" id="icon_saving" alt="" />
 														</td>
 													</tr>
@@ -293,7 +293,7 @@
 										</tr>
 										<tr>
 											<td align="right" valign="middle"><input type="submit" id="btnSubmit" value="${I18n.getMessage("PostForm.submit")}" class="mainoption" /> 
-												<input type="button" id="btnCancel" value="${I18n.getMessage("cancel")}" class="mainoption" onclick="cancelComment()" /> 
+												<input type="button" id="btnCancel" value="${I18n.getMessage("cancel")}" class="mainoption" onclick="cancelComment(${topic.id} + '_' + ${post.id})" /> 
 												<img src="${contextPath}/images/transp.gif" id="icon_saving" alt="" />
 											</td>
 										</tr>
