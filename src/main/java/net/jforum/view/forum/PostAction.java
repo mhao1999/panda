@@ -1281,6 +1281,8 @@ public class PostAction extends Command
 
 		comment.setTopicId(topic.getId());
 		comment.setPostId(postId);
+		int toUserId = this.request.getIntParameter("to_user_id");
+		comment.setToUserId(toUserId);
 
 		// Save the remaining stuff
 		int commentId = commentDao.addNew(comment);

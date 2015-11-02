@@ -11,6 +11,7 @@ public class Comment implements Serializable {
 	private int postId;
 	private int topicId;
 	private int userId;
+	private int toUserId;
 	private String userName;
 	private String formattedTime;
 	private String text;
@@ -32,6 +33,7 @@ public class Comment implements Serializable {
 		this.postId = comment.getPostId();
 		this.topicId = comment.getTopicId();
 		this.userId = comment.getUserId();
+		this.toUserId = comment.getToUserId();
 		this.userName = comment.getUserName();
 		this.formattedTime = comment.getFormattedTime();
 		this.text = comment.getText();
@@ -52,6 +54,10 @@ public class Comment implements Serializable {
 	
 	public int getUserId() {
 		return this.userId;
+	}
+	
+	public int getToUserId() {
+		return this.toUserId;
 	}
 	
 	public String getUserName() {
@@ -98,6 +104,11 @@ public class Comment implements Serializable {
 	public void setUserId(int userId)
 	{
 		this.userId = userId;
+	}
+	
+	public void setToUserId(int toUserId)
+	{
+		this.toUserId = toUserId;
 	}
 	
 	public void setUserName(String userName)

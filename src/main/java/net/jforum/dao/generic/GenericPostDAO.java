@@ -144,6 +144,7 @@ public class GenericPostDAO extends AutoKeys implements net.jforum.dao.PostDAO
 		comment.setId(rs.getInt("comment_id"));
 		comment.setPostId(rs.getInt("post_id"));
 		comment.setUserId(rs.getInt("user_id"));
+		comment.setToUserId(rs.getInt("to_user_id"));
 		comment.setUserName(rs.getString("username"));
 		
 		Timestamp commentTime = rs.getTimestamp("comment_time");

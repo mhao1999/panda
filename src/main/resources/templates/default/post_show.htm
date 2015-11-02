@@ -188,18 +188,23 @@
 								<hr>
 								<#list comments.get(post.id).getList() as comment>
 								    <#assign cuser = users.get(comment.userId) />
-								    <div class="commentbody" style="font-size: 16px; font-weight:lighter; ">
+								    <div class="postbody" style="font-weight:lighter; ">
 								    	<a class="hideDisplay" style="cursor: pointer;">
-								    		<span>${comment.userName}</span>
+								    		<span style="color: #a0a0a0">${comment.userName} </span>
 								    		<div class="showDisplayOnHover">
 								    			<#include "comment_show_user_inc.htm"/>
 								    		</div>
 								    	</a>
+								    	
+								    	<#if comment.toUserId != 0>
+								    		<#assign toUser = users.get(comment.toUserId) />
+								    		<span>${I18n.getMessage("PostForm.simpleReply")} ${toUser.username}</span>
+								    	</#if>
 								    </div>
-									<div class="commentbody">
+									<div class="postbody">
 										${comment.text}
 									</div>
-									<div class="commentbody">
+									<div class="postbody">
 										<form action="${JForumContext.encodeURL("/jforum")}" method="post" name="post" id="post_${comment.id}" onsubmit="return validatePostForm(this);" enctype="multipart/form-data" accept-charset="${encoding}">
 											<input type="hidden" name="action" value="insertComment" />
 											<input type="hidden" name="module" value="posts" />
@@ -207,6 +212,7 @@
 											<input type="hidden" name="start" value="${start?default("")}" />
 											<input type="hidden" name="topic_id" value="${topic.id}" />
 											<input type="hidden" name="post_id" value="${post.id}" />
+											<input type="hidden" name="to_user_id" value="${comment.userId}" />
 											<input type="hidden" name="disable_html" value="1" />
 											<input type="hidden" name="quick" value="1" />
 	
@@ -266,7 +272,7 @@
 		
 					<tr> 
 						<td class="${rowColor}" valign="bottom" nowrap="nowrap" width="100%">
-						<div class="commentbody">
+						<div class="postbody">
 							<form action="${JForumContext.encodeURL("/jforum")}" method="post" name="post" id="post_${topic.id}_${post.id}" onsubmit="return validatePostForm(this);" enctype="multipart/form-data" accept-charset="${encoding}">
 								<input type="hidden" name="action" value="insertComment" /> 
 								<input type="hidden" name="module" value="posts" /> 
@@ -274,6 +280,7 @@
 								<input type="hidden" name="start" value="${start?default(" ")}" /> 
 								<input type="hidden" name="topic_id" value="${topic.id}" /> 
 								<input type="hidden" name="post_id" value="${post.id}" /> 
+								<input type="hidden" name="to_user_id" value="0" />
 								<input type="hidden" name="disable_html" value="1" /> 
 								<input type="hidden" name="quick" value="1" />
 

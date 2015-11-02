@@ -202,7 +202,7 @@ PostModel.selectAllByTopicByLimit = SELECT p.post_id, topic_id, forum_id, p.user
 	ORDER BY post_time ASC \
 	LIMIT ?, ?
 	
-PostModel.selectAllCommentByTopic = SELECT comment_id, post_id, c.user_id, u.username, comment_text, comment_time \
+PostModel.selectAllCommentByTopic = SELECT comment_id, post_id, c.user_id, c.to_user_id, u.username, comment_text, comment_time \
 	FROM jforum_comment c, jforum_users u WHERE topic_id = ? AND c.user_id = u.user_id ORDER BY post_id, comment_id
 
 PostModel.selectByUserByLimit = SELECT p.post_id, topic_id, forum_id, p.user_id, post_time, poster_ip, enable_bbcode, p.attach, \
@@ -224,8 +224,8 @@ PostModel.deleteByTopic = SELECT post_id, user_id FROM jforum_posts WHERE topic_
 # #############
 # CommentModel
 # #############
-CommentModel.addNewComment = INSERT INTO jforum_comment (post_id, topic_id, user_id, comment_text, comment_time) \
-	VALUES (?, ?, ?, ?, ?)
+CommentModel.addNewComment = INSERT INTO jforum_comment (post_id, topic_id, user_id, to_user_id, comment_text, comment_time) \
+	VALUES (?, ?, ?, ?, ?, ?)
 
 # #############
 # PollModel
